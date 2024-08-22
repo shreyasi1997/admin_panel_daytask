@@ -1,0 +1,59 @@
+.register-first {
+    padding: 20px;
+    background-color: #212832;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .heading-para-register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: -1px;
+  }
+  
+  .heading-second-register {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .register-image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: -20px;
+  }
+  
+  .register-image {
+    width: 100px; /* Adjust the size as needed */
+    height: auto;
+  }
+  
+  .form-container-register {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+  }
+  
+  .register-button {
+    height: 58px;
+    width: 100%;
+    background-color: #FBC02D;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .register-button:hover {
+    background-color: #FED36A;
+  }
+  
