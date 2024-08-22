@@ -6,10 +6,12 @@ import { colors, fonts_size } from '../../common/color';
 import { Email as EmailIcon, Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-
+import { loginSuccess , loginFailure} from '../../redux/allSlice/authSlice';
+import { useDispatch } from 'react-redux';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -22,17 +24,22 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://reqres.in/api/login', {
+      const response = await axios.post('http://localhost:5000/login', {
         email,
         password,
       });
-      setSnackbarMessage('Login successful!');
-      setSnackbarSeverity('success');
+      // setSnackbarMessage('Login successful!');
+      // setSnackbarSeverity('success');
       // Handle successful login (e.g., redirect to another page)
-      navigate('/register'); // Redirect to profile or another page
+      dispatch(loginSuccess(response.data.user));
+      setTimeout(() => {
+        navigate('/register'); // Redirect to the register page after 3 seconds
+      }, 3000); 
     } catch (error) {
-      setSnackbarMessage('Login failed. Please check your credentials.');
-      setSnackbarSeverity('error');
+      // setSnackbarMessage('Login failed. Please check your credentials.');
+      // setSnackbarSeverity('error');
+      dispatch(loginFailure(error.response.data.message));
+
     }
     setSnackbarOpen(true);
   };

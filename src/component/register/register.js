@@ -4,7 +4,10 @@ import { colors, fonts_size } from '../../common/color';
 import axios from 'axios';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
-
+// import { registrationSuccess, registrationFailure } from '../../redux/authSlice'; // Updated import
+import { useDispatch } from 'react-redux';
+import { registrationSuccess } from '../../redux/allSlice/authSlice';
+import { registrationFailure } from '../../redux/allSlice/authSlice';
 const Registration = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -16,7 +19,9 @@ const Registration = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -28,17 +33,24 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/register', formData, {
+      const response = await axios.post('http://localhost:5000/register', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
+
+      // Dispatch success action with response data
+      dispatch(registrationSuccess(response.data));
       setSnackbarMessage('Registration successful!');
       setSnackbarSeverity('success');
-       setTimeout(() => {
-      navigate('/login'); // Redirect to the register page after 3 seconds
-    }, 3000); 
+      
+      setTimeout(() => {
+        navigate('/login'); // Redirect to the login page after 3 seconds
+      }, 3000);
+
     } catch (error) {
+      // Dispatch failure action with error message
+      dispatch(registrationFailure(error.response?.data?.message || 'Registration failed. Please try again.'));
       setSnackbarMessage('Registration failed. Please try again.');
       setSnackbarSeverity('error');
     }
@@ -51,21 +63,8 @@ const Registration = () => {
         <img src="/pic/reg_img.png" alt="Register" className="register-image" />
       </Box>
       <Box className="heading-para-register">
-        {/* <Typography 
-          sx={{
-            fontSize: fonts_size.header,
-            fontWeight: 'bold',
-          }}
-        >
-          <span style={{ color: colors.rightPanelAdminPanel }}>Day</span>
-          <span style={{ color: colors.loginpagecolor }}>Task</span>
-        </Typography> */}
+        {/* Optional: You can uncomment the Typography components if you need headers */}
       </Box>
-      {/* <Box className="heading-second-register">
-        <Typography sx={{ color: colors.rightPanelAdminPanel, fontSize: fonts_size.header }}>
-          Create an Account
-        </Typography>
-      </Box> */}
       <form onSubmit={handleSubmit} className="form-container-register">
         <Box className="register-username" sx={{marginTop:'-20px'}}>
           <Typography sx={{ color: colors.rightPanelAdminPanel, fontSize: fonts_size.text }}>
@@ -83,9 +82,6 @@ const Registration = () => {
               '& .MuiInputBase-input': {
                 paddingLeft: '56px',
                 color: '#fff',
-              },
-              '& .MuiInputAdornment-root': {
-                marginRight: '8px',
               },
               '& .MuiOutlinedInput-root': {
                 height: '58px',
@@ -116,9 +112,6 @@ const Registration = () => {
                 paddingLeft: '56px',
                 color: '#fff',
               },
-              '& .MuiInputAdornment-root': {
-                marginRight: '8px',
-              },
               '& .MuiOutlinedInput-root': {
                 height: '58px',
                 width: '356px',
@@ -147,9 +140,6 @@ const Registration = () => {
               '& .MuiInputBase-input': {
                 paddingLeft: '56px',
                 color: '#fff',
-              },
-              '& .MuiInputAdornment-root': {
-                marginRight: '8px',
               },
               '& .MuiOutlinedInput-root': {
                 height: '58px',
@@ -186,8 +176,10 @@ const Registration = () => {
             </Select>
           </FormControl>
         </Box>
-        <Box className="register-button" onClick={handleSubmit}>
-          <Typography sx={{ color: '#fff', fontSize: fonts_size.text }}>Register</Typography>
+        <Box className="register-button">
+          <Button type="submit" fullWidth sx={{ backgroundColor: '#FF5722', color: '#fff', height: '58px' }}>
+            Register
+          </Button>
         </Box>
       </form>
       <Snackbar
