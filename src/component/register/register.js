@@ -4,7 +4,6 @@ import { colors, fonts_size } from '../../common/color';
 import axios from 'axios';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
-// import { registrationSuccess, registrationFailure } from '../../redux/authSlice'; // Updated import
 import { useDispatch } from 'react-redux';
 import { registrationSuccess } from '../../redux/allSlice/authSlice';
 import { registrationFailure } from '../../redux/allSlice/authSlice';
@@ -13,7 +12,7 @@ const Registration = () => {
     username: '',
     email: '',
     password: '',
-    role: 'normal_user',
+    role: '',
   });
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -33,7 +32,7 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/register', formData, {
+      const response = await axios.post('http://localhost:5000/api/auth/register', formData, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -177,7 +176,7 @@ const Registration = () => {
           </FormControl>
         </Box>
         <Box className="register-button">
-          <Button type="submit" fullWidth sx={{ backgroundColor: '#FF5722', color: '#fff', height: '58px' }}>
+          <Button type="submit" fullWidth sx={{ backgroundColor: '#FED36A', color: '#fff', height: '58px' }}>
             Register
           </Button>
         </Box>
