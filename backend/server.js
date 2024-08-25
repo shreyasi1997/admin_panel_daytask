@@ -2,15 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-require('dotenv').config();  // Load environment variables from .env
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://shreyasichatterg:8MBMAmIkxSe3o88v@cluster0.wb6yg.mongodb.net/mydatabase?tls=true', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.log('Failed to connect to MongoDB', err));
+  .catch(err => console.log('Failed to connect to MongoDB:', err));
 
 app.use(bodyParser.json());
 app.use(cors());

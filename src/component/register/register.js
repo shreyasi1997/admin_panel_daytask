@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Typography, Box, Snackbar, Alert } from '@mui/material';
+import { TextField, Button, MenuItem, Select, FormControl, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { colors, fonts_size } from '../../common/color';
 import axios from 'axios';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { registrationSuccess } from '../../redux/allSlice/authSlice';
-import { registrationFailure } from '../../redux/allSlice/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { registrationSuccess, registrationFailure } from '../../redux/allSlice/authSlice';
+
 const Registration = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -20,6 +20,7 @@ const Registration = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const errorMessages = useSelector((state) => state.auth.error); // Use selector to get error
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,11 +62,8 @@ const Registration = () => {
       <Box className="register-image-container">
         <img src="/pic/reg_img.png" alt="Register" className="register-image" />
       </Box>
-      <Box className="heading-para-register">
-        {/* Optional: You can uncomment the Typography components if you need headers */}
-      </Box>
       <form onSubmit={handleSubmit} className="form-container-register">
-        <Box className="register-username" sx={{marginTop:'-20px'}}>
+        <Box className="register-username" sx={{ marginTop: '-20px' }}>
           <Typography sx={{ color: colors.rightPanelAdminPanel, fontSize: fonts_size.text }}>
             Username
           </Typography>
@@ -73,24 +71,25 @@ const Registration = () => {
             fullWidth
             placeholder="Enter your username"
             name="username"
-            value={formData.username}
+            value={formData?.username}
             onChange={handleChange}
             required
             sx={{
               marginTop: '5px',
               '& .MuiInputBase-input': {
-                paddingLeft: '56px',
+                paddingLeft: '16px',
                 color: '#fff',
               },
               '& .MuiOutlinedInput-root': {
                 height: '58px',
-                width: '356px',
                 backgroundColor: '#455A64',
                 '& input::placeholder': {
                   color: '#fff',
                 },
               },
             }}
+            error={!!errorMessages?.username}
+            helperText={errorMessages?.username || ''}
           />
         </Box>
         <Box className="register-email">
@@ -102,24 +101,25 @@ const Registration = () => {
             placeholder="Enter your email"
             name="email"
             type="email"
-            value={formData.email}
+            value={formData?.email}
             onChange={handleChange}
             required
             sx={{
               marginTop: '5px',
               '& .MuiInputBase-input': {
-                paddingLeft: '56px',
+                paddingLeft: '16px',
                 color: '#fff',
               },
               '& .MuiOutlinedInput-root': {
                 height: '58px',
-                width: '356px',
                 backgroundColor: '#455A64',
                 '& input::placeholder': {
                   color: '#fff',
                 },
               },
             }}
+            error={!!errorMessages?.email}
+            helperText={errorMessages?.email || ''}
           />
         </Box>
         <Box className="register-password">
@@ -131,24 +131,25 @@ const Registration = () => {
             fullWidth
             placeholder="Enter your password"
             name="password"
-            value={formData.password}
+            value={formData?.password}
             onChange={handleChange}
             required
             sx={{
               marginTop: '5px',
               '& .MuiInputBase-input': {
-                paddingLeft: '56px',
+                paddingLeft: '16px',
                 color: '#fff',
               },
               '& .MuiOutlinedInput-root': {
                 height: '58px',
-                width: '356px',
                 backgroundColor: '#455A64',
                 '& input::placeholder': {
                   color: '#fff',
                 },
               },
             }}
+            error={!!errorMessages?.password}
+            helperText={errorMessages?.password || ''}
           />
         </Box>
         <Box className="register-role">
@@ -158,7 +159,7 @@ const Registration = () => {
           <FormControl fullWidth sx={{ marginTop: '5px' }}>
             <Select
               name="role"
-              value={formData.role}
+              value={formData?.role}
               onChange={handleChange}
               sx={{
                 backgroundColor: '#455A64',
@@ -167,6 +168,7 @@ const Registration = () => {
                   paddingLeft: '16px',
                 },
               }}
+              error={!!errorMessages?.role}
             >
               <MenuItem value="super_admin">Super Admin</MenuItem>
               <MenuItem value="admin">Admin</MenuItem>

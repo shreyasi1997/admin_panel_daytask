@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import './login.css';
-import { Typography, InputAdornment, IconButton, TextField, Snackbar, Alert, Link as MuiLink } from '@mui/material';
+import { Typography, InputAdornment, IconButton, TextField, Snackbar, Alert, Link as MuiLink, Button } from '@mui/material'; // Import Button here
 import { Box } from '@mui/system';
 import { colors, fonts_size } from '../../common/color';
 import { Email as EmailIcon, Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { loginSuccess , loginFailure} from '../../redux/allSlice/authSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, loginFailure } from '../../redux/allSlice/authSlice';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const error = useSelector((state) => state.auth.error);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -28,18 +30,19 @@ const Login = () => {
         email,
         password,
       });
-      // setSnackbarMessage('Login successful!');
-      // setSnackbarSeverity('success');
-      // Handle successful login (e.g., redirect to another page)
+
       dispatch(loginSuccess(response.data.user));
+      setSnackbarMessage('Login successful!');
+      setSnackbarSeverity('success');
+
       setTimeout(() => {
         navigate('/register'); // Redirect to the register page after 3 seconds
-      }, 3000); 
+      }, 3000);
     } catch (error) {
-      // setSnackbarMessage('Login failed. Please check your credentials.');
-      // setSnackbarSeverity('error');
-      dispatch(loginFailure(error.response.data.message));
-
+      const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
+      dispatch(loginFailure(errorMessage));
+      setSnackbarMessage(errorMessage);
+      setSnackbarSeverity('error');
     }
     setSnackbarOpen(true);
   };
@@ -145,8 +148,10 @@ const Login = () => {
         />
       </Box>
 
-      <Box className='login-button' onClick={handleLogin}>
-        <Typography sx={{ color: '#fff', fontSize: fonts_size.text }}>Login</Typography>
+      <Box className='login-button'>
+        <Button fullWidth onClick={handleLogin} sx={{ height: '58px', backgroundColor: '#FED36A', color: '#fff' }}>
+          Login
+        </Button>
       </Box>
 
       <Typography sx={{ color: '#fff', fontSize: fonts_size.text, marginTop: '15px' }}>
@@ -156,7 +161,7 @@ const Login = () => {
           to="/register" 
           sx={{ color: colors.loginpagecolor, marginLeft: '5px', textDecoration: 'none' }}
         >
-          Sign in
+          Sign up
         </MuiLink>
       </Typography>
 
